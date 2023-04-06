@@ -1,0 +1,56 @@
+library(ggplot2)
+library(ggtree)
+library(ape)
+
+path <- "Desktop/influenza\ A/phylogenetic_tree_analysis/H1N1"
+path <- "Desktop/influenza\ A/phylogenetic_tree_analysis/H3N2"
+setwd(path)
+
+info <- read.csv("metadata.tsv", sep="\t", header=TRUE)
+info$Year <- as.character(info$year)
+
+file <- "tree_ha.nwk"
+
+tree <- read.tree(file)
+tree <- root(tree, "A/Wellington/01/2004")
+#tree <- root(tree, "A/Iowa/01/2010")
+
+p1 <- ggtree(tree) %<+% info +
+  geom_tippoint(aes(color=Year)) +
+  geom_treescale(x=0, y=45, fontsize=4, linesize=2, offset=2) +
+ geom_tiplab(size=3) 
+
+#plot(p1)
+
+msaplot_temp <- msaplot(p=p1, fasta="labels.fa", offset = 0, width=.25) +  scale_fill_discrete(name = "Aminoacids")
+temp <- (msaplot(p=p1, fasta="labels.fa", offset = 0, width=.35) +  scale_fill_discrete(name = "Aminoacids"))[["layers"]][[7]][["data"]]["seq"] 
+
+msaplot_temp[["layers"]][[7]][["data"]]["seq"] <- toupper(temp$seq)
+
+msaplot_temp
+
+
+
+info <- read.csv("metadata.tsv", sep="\t", header=TRUE)
+info$Year <- as.character(info$year)
+
+file <- "tree_na.nwk"
+
+tree <- read.tree(file)
+#tree <- root(tree, "A/Wellington/01/2004")
+tree <- root(tree, "A/Iowa/01/2010")
+
+p1 <- ggtree(tree) %<+% info +
+  geom_tippoint(aes(color=Year)) +
+  geom_treescale(x=0, y=45, fontsize=4, linesize=2, offset=2)   
+# geom_tiplab(size=3) 
+
+#plot(p1)
+
+msaplot_temp <- msaplot(p=p1, fasta="labels.fa", offset = 0, width=.25) +  scale_fill_discrete(name = "Aminoacids")
+temp <- (msaplot(p=p1, fasta="labels.fa", offset = 0, width=.35) +  scale_fill_discrete(name = "Aminoacids"))[["layers"]][[7]][["data"]]["seq"] 
+
+msaplot_temp[["layers"]][[7]][["data"]]["seq"] <- toupper(temp$seq)
+
+msaplot_temp
+
